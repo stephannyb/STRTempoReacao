@@ -14,6 +14,8 @@ import {
   ScoreValue,
   StartButton,
   StartButtonText,
+  TimeReactionTitle,
+  TimeReactionValue,
 } from './styles';
 
 import Button from './components/Button';
@@ -35,6 +37,11 @@ const App: React.FC = () => {
   }, []);
 
   const [score, setScore] = useState<number>(0);
+  const [timeReaction, setTimeReaction] = useState<number>(0);
+
+  const [stop, setStop] = useState<boolean>(false);
+  const [start, setStart] = useState<boolean>(false);
+
   const [initialTime, setInitialTime] = useState<number | null>(null);
   const [finalTime, setFinalTime] = useState<number | null>(null);
   const [times, setTimes] = useState<number[]>([]);
@@ -48,33 +55,49 @@ const App: React.FC = () => {
     setSelectedColor(colors[random].name);
     setColorVerification(colors[random].name);
     setInitialTime(new Date().getTime());
-    console.log({ initialTime, date: new Date(initialTime || 0) });
+    // console.log({ initialTime, date: new Date(initialTime || 0) });
     await new Promise(resolve => setTimeout(resolve, 200));
     setSelectedColor(null);
   }, [colors]);
 
-  const handleStart = useCallback(() => {
-    console.log('start');
+  const handleStart = useCallback(async () => {
+    // console.log('start');
     setScore(0);
     getNewColor();
-    setTimes([]);
+    setStart(true);
+    // setTimes([]);
   }, [getNewColor]);
 
   const handleColorButton = useCallback(
     async (colorName: string) => {
       setFinalTime(new Date().getTime());
-      console.log({ finalTime, date: new Date(finalTime || 0) });
-      const isCorrectAnswer = colorName === colorVerification;
 
-      if (finalTime && initialTime)
-        setTimes([...times, finalTime - initialTime]);
+      if (start) {
+        const isCorrectAnswer = colorName === colorVerification;
 
-      setScore(isCorrectAnswer ? score + 1 : score - 1);
+        if (finalTime && initialTime) {
+          setTimeReaction(finalTime - initialTime);
+          console.log(finalTime - initialTime);
+          setTimes([...times, finalTime - initialTime]);
+        }
+        if (!stop) setScore(isCorrectAnswer ? score + 1 : score - 1);
+        setStop(score >= 9);
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      getNewColor();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        getNewColor();
+      }
     },
-    [colorVerification, getNewColor, score, initialTime, finalTime, times],
+    [
+      colorVerification,
+      getNewColor,
+      score,
+      stop,
+      start,
+      setTimes,
+      initialTime,
+      finalTime,
+      times,
+    ],
   );
 
   return (
@@ -84,7 +107,10 @@ const App: React.FC = () => {
       </Header>
       <Score>
         <ScoreTitle>SCORE</ScoreTitle>
-        <ScoreValue>{times.map(time => time)}</ScoreValue>
+        <ScoreValue>{score}</ScoreValue>
+        <TimeReactionTitle>Tempo de Reação:</TimeReactionTitle>
+        <TimeReactionValue> {timeReaction} </TimeReactionValue>
+        {/* <ScoreValue>{times.map(time => time)}</ScoreValue> */}
       </Score>
       <Lamps>
         <LampRow>

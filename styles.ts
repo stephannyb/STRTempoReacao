@@ -29,6 +29,16 @@ export const ScoreValue = styled.Text`
   padding: 10px;
 `;
 
+export const TimeReactionTitle = styled.Text`
+  font-size: 20px;
+  padding: 10px;
+`;
+
+export const TimeReactionValue = styled.Text`
+  font-size: 20px;
+  padding: 10px;
+`;
+
 export const Score = styled.View`
   background-color: #dcdcdc;
   height: 200px;
