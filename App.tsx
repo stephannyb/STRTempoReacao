@@ -21,6 +21,10 @@ import {
 import Button from './components/Button';
 import Lamp from './components/Lamp';
 
+import GameData from './gameData';
+
+const gameData = new GameData();
+
 interface IColor {
   id: number;
   name: string;
@@ -37,67 +41,61 @@ const App: React.FC = () => {
   }, []);
 
   const [score, setScore] = useState<number>(0);
-  const [timeReaction, setTimeReaction] = useState<number>(0);
 
-  const [stop, setStop] = useState<boolean>(false);
-  const [start, setStart] = useState<boolean>(false);
+  const timeReaction = useMemo<number>(() => {
+    return gameData.getTimeReaction();
+  }, [score]);
 
-  const [initialTime, setInitialTime] = useState<number | null>(null);
-  const [finalTime, setFinalTime] = useState<number | null>(null);
-  const [times, setTimes] = useState<number[]>([]);
+  const [gameState, setGameState] = useState<'on' | 'off'>('off');
+
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [colorVerification, setColorVerification] = useState<string | null>(
-    null,
-  );
 
-  const getNewColor = useCallback(async () => {
-    const random = Math.floor(Math.random() * 4);
-    setSelectedColor(colors[random].name);
-    setColorVerification(colors[random].name);
-    setInitialTime(new Date().getTime());
-    // console.log({ initialTime, date: new Date(initialTime || 0) });
+  const [disableColorButton, setDisableColorButton] = useState<boolean>(true);
+
+  const blinkColor = useCallback(async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    if (score > 9) {
+      setGameState('off');
+      return;
+    }
+
+    const colorCode = Math.floor(Math.random() * 4);
+
+    setSelectedColor(colors[colorCode].name);
+
     await new Promise(resolve => setTimeout(resolve, 200));
+
+    gameData.create(colors[colorCode].name);
+
+    setDisableColorButton(false);
     setSelectedColor(null);
-  }, [colors]);
+  }, [colors, score]);
 
   const handleStart = useCallback(async () => {
-    // console.log('start');
+    if (gameState === 'on') return;
+
+    gameData.reset();
+
+    setGameState('on');
+
     setScore(0);
-    getNewColor();
-    setStart(true);
-    // setTimes([]);
-  }, [getNewColor]);
+
+    blinkColor();
+  }, [blinkColor, gameState]);
 
   const handleColorButton = useCallback(
-    async (colorName: string) => {
-      setFinalTime(new Date().getTime());
+    async (clickedColor: string) => {
+      if (gameState === 'off') return;
 
-      if (start) {
-        const isCorrectAnswer = colorName === colorVerification;
+      const isCorrect = gameData.verifyUserAnswear(clickedColor);
+      const newScore = isCorrect ? score + 1 : score;
+      if (isCorrect) setScore(score + 1);
 
-        if (finalTime && initialTime) {
-          setTimeReaction(finalTime - initialTime);
-          console.log(finalTime - initialTime);
-          setTimes([...times, finalTime - initialTime]);
-        }
-        if (!stop) setScore(isCorrectAnswer ? score + 1 : score - 1);
-        setStop(score >= 9);
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        getNewColor();
-      }
+      if (newScore < 10) await blinkColor();
+      else setGameState('off');
     },
-    [
-      colorVerification,
-      getNewColor,
-      score,
-      stop,
-      start,
-      setTimes,
-      initialTime,
-      finalTime,
-      times,
-    ],
+    [blinkColor, gameState, score],
   );
 
   return (
@@ -109,8 +107,7 @@ const App: React.FC = () => {
         <ScoreTitle>SCORE</ScoreTitle>
         <ScoreValue>{score}</ScoreValue>
         <TimeReactionTitle>Tempo de Reação:</TimeReactionTitle>
-        <TimeReactionValue> {timeReaction} </TimeReactionValue>
-        {/* <ScoreValue>{times.map(time => time)}</ScoreValue> */}
+        <TimeReactionValue>{timeReaction.toFixed(2)}</TimeReactionValue>
       </Score>
       <Lamps>
         <LampRow>
@@ -134,19 +131,35 @@ const App: React.FC = () => {
       </Lamps>
       <Buttons>
         <Button
-          onPress={() => handleColorButton('yellow')}
+          disabled={disableColorButton}
+          onPress={() => {
+            setDisableColorButton(true);
+            handleColorButton('yellow');
+          }}
           backgroundColor="yellow"
         />
         <Button
-          onPress={() => handleColorButton('blue')}
+          disabled={disableColorButton}
+          onPress={() => {
+            setDisableColorButton(true);
+            handleColorButton('blue');
+          }}
           backgroundColor="blue"
         />
         <Button
-          onPress={() => handleColorButton('green')}
+          disabled={disableColorButton}
+          onPress={() => {
+            setDisableColorButton(true);
+            handleColorButton('green');
+          }}
           backgroundColor="green"
         />
         <Button
-          onPress={() => handleColorButton('red')}
+          disabled={disableColorButton}
+          onPress={() => {
+            setDisableColorButton(true);
+            handleColorButton('red');
+          }}
           backgroundColor="red"
         />
       </Buttons>
@@ -154,6 +167,9 @@ const App: React.FC = () => {
       <Menu>
         <StartButton onPress={() => handleStart()}>
           <StartButtonText>Start</StartButtonText>
+        </StartButton>
+        <StartButton onPress={() => setGameState('off')}>
+          <StartButtonText>Stop</StartButtonText>
         </StartButton>
       </Menu>
     </Container>

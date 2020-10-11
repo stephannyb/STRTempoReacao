@@ -66,9 +66,11 @@ export const Buttons = styled.View`
 `;
 
 export const Menu = styled.View`
-  background-color: #dcdcdc;
+  flex-direction: row;
+  background-color: red;
   height: 100%;
-  align-items: center;
+  justify-content: space-evenly;
+  /* align-items: center; */
 `;
 
 export const StartButton = styled(RectButton)`
