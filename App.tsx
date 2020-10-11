@@ -38,6 +38,9 @@ const App: React.FC = () => {
 
   const [score, setScore] = useState<number>(0);
   const [timeReaction, setTimeReaction] = useState<number>(0);
+  const [timeReactionMedia, setTimeReactionMedia] = useState<number | null>(
+    null,
+  );
 
   const [stop, setStop] = useState<boolean>(false);
   const [start, setStart] = useState<boolean>(false);
@@ -63,9 +66,11 @@ const App: React.FC = () => {
   const handleStart = useCallback(async () => {
     // console.log('start');
     setScore(0);
+    setTimeReaction(0);
+    setTimeReactionMedia(null);
     getNewColor();
     setStart(true);
-    // setTimes([]);
+    setTimes([]);
   }, [getNewColor]);
 
   const handleColorButton = useCallback(
@@ -75,10 +80,10 @@ const App: React.FC = () => {
       if (start) {
         const isCorrectAnswer = colorName === colorVerification;
 
-        if (finalTime && initialTime) {
-          setTimeReaction(finalTime - initialTime);
-          console.log(finalTime - initialTime);
-          setTimes([...times, finalTime - initialTime]);
+        if (finalTime && initialTime && !stop && isCorrectAnswer) {
+          const tr = finalTime - initialTime;
+          setTimeReaction(tr);
+          times.push(tr);
         }
         if (!stop) setScore(isCorrectAnswer ? score + 1 : score - 1);
         setStop(score >= 9);
@@ -86,18 +91,18 @@ const App: React.FC = () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         getNewColor();
       }
+      if (stop) {
+        const trSoma = times.reduce((acc, cur) => acc + cur);
+        // console.log({ trSoma });
+        // console.log(times.length);
+
+        const trMedia = trSoma / times.length;
+        trMedia.toFixed(2);
+        setTimeReactionMedia(trMedia);
+      }
     },
-    [
-      colorVerification,
-      getNewColor,
-      score,
-      stop,
-      start,
-      setTimes,
-      initialTime,
-      finalTime,
-      times,
-    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [colorVerification, getNewColor, score, stop, start, finalTime, times],
   );
 
   return (
@@ -108,8 +113,10 @@ const App: React.FC = () => {
       <Score>
         <ScoreTitle>SCORE</ScoreTitle>
         <ScoreValue>{score}</ScoreValue>
-        <TimeReactionTitle>Tempo de Reação:</TimeReactionTitle>
+        <TimeReactionTitle>Tempo de Reação (ms)</TimeReactionTitle>
         <TimeReactionValue> {timeReaction} </TimeReactionValue>
+        <TimeReactionTitle>Tempo de Reação Medio (ms)</TimeReactionTitle>
+        <TimeReactionValue> {timeReactionMedia} </TimeReactionValue>
         {/* <ScoreValue>{times.map(time => time)}</ScoreValue> */}
       </Score>
       <Lamps>

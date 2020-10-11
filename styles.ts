@@ -20,23 +20,23 @@ export const AppTitle = styled.Text`
 `;
 
 export const ScoreTitle = styled.Text`
-  font-size: 30px;
-  padding: 10px;
+  font-size: 25px;
+  padding: 2px;
 `;
 
 export const ScoreValue = styled.Text`
-  font-size: 30px;
-  padding: 10px;
+  font-size: 25px;
+  padding: 2px;
 `;
 
 export const TimeReactionTitle = styled.Text`
   font-size: 20px;
-  padding: 10px;
+  padding: 1px;
 `;
 
 export const TimeReactionValue = styled.Text`
   font-size: 20px;
-  padding: 10px;
+  padding: 1px;
 `;
 
 export const Score = styled.View`
