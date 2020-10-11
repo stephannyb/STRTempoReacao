@@ -13,13 +13,12 @@ export default class GameData {
   create(colorShown: string): void {
     this.userAnswers.push({
       colorShown,
-
-      initialTime: getCurrentMiliseconds('initial'),
+      initialTime: getCurrentMiliseconds(),
     });
   }
 
   verifyUserAnswear(clickedColor: string): boolean {
-    const finalTime = getCurrentMiliseconds('final');
+    const finalTime = getCurrentMiliseconds();
     const [attemp, ...rest] = this.userAnswers.reverse();
     if (!attemp) return false;
 

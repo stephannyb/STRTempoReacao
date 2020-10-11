@@ -1,4 +1,4 @@
-export function getCurrentMiliseconds(caller: string): number {
+export function getCurrentMiliseconds(): number {
   const result = new Date().getTime();
 
   return result;
