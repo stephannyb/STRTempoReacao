@@ -9,7 +9,7 @@ export const Container = styled.View`
 export const Header = styled.View`
   background-color: grey;
   width: 100%;
-  height: 70px;
+  height: 90px;
   justify-content: center;
   align-items: center;
 `;
@@ -31,12 +31,12 @@ export const ScoreValue = styled.Text`
 
 export const TimeReactionTitle = styled.Text`
   font-size: 20px;
-  padding: 1px;
+  padding: 2px;
 `;
 
 export const TimeReactionValue = styled.Text`
   font-size: 20px;
-  padding: 1px;
+  padding: 2px;
 `;
 
 export const Score = styled.View`
@@ -66,14 +66,18 @@ export const Buttons = styled.View`
 `;
 
 export const Menu = styled.View`
+  flex-direction: row;
   background-color: #dcdcdc;
-  height: 100%;
-  align-items: center;
+  height: 70%;
+  padding: 10px;
+  justify-content: space-evenly;
+  /* align-items: center; */
 `;
 
 export const StartButton = styled(RectButton)`
   width: 100px;
   border-radius: 10px;
+  padding: 2px;
   background-color: gray;
   align-items: center;
 `;
