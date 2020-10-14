@@ -1,5 +1,7 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useCallback, useMemo, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import {
   AppTitle,
@@ -12,14 +14,9 @@ import {
   LampRow,
   ScoreTitle,
   ScoreValue,
-  StartButton,
-  StartButtonText,
   TimeReactionTitle,
   TimeReactionValue,
 } from './styles';
-
-import Button from './components/Button';
-import Lamp from './components/Lamp';
 
 import GameData from './gameData';
 
@@ -46,9 +43,17 @@ const App: React.FC = () => {
     return gameData.getTimeReaction();
   }, [score]);
 
+  const timeReactionMedio = useMemo<number | null>(() => {
+    return gameData.getTimeReactionMedio();
+  }, [score]);
+
   const [gameState, setGameState] = useState<'on' | 'off'>('off');
 
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
+  const [selectedPosition, setSelectedPosition] = useState<number | null>(null);
+
+  const [timeMedio, setTimeMedio] = useState<number>(0);
 
   const [disableColorButton, setDisableColorButton] = useState<boolean>(true);
 
@@ -61,8 +66,10 @@ const App: React.FC = () => {
     }
 
     const colorCode = Math.floor(Math.random() * 4);
+    const lampPosition = Math.floor(Math.random() * 15);
 
     setSelectedColor(colors[colorCode].name);
+    setSelectedPosition(lampPosition);
 
     await new Promise(resolve => setTimeout(resolve, 200));
 
@@ -78,6 +85,7 @@ const App: React.FC = () => {
     gameData.reset();
 
     setGameState('on');
+    setTimeMedio(0);
 
     setScore(0);
 
@@ -89,13 +97,16 @@ const App: React.FC = () => {
       if (gameState === 'off') return;
 
       const isCorrect = gameData.verifyUserAnswear(clickedColor);
-      const newScore = isCorrect ? score + 1 : score;
-      if (isCorrect) setScore(score + 1);
+      const newScore = isCorrect ? score + 1 : score - 1;
+      if (newScore >= 0) setScore(newScore);
 
       if (newScore < 10) await blinkColor();
-      else setGameState('off');
+      else {
+        setGameState('off');
+        setTimeMedio(timeReactionMedio || 0);
+      }
     },
-    [blinkColor, gameState, score],
+    [blinkColor, gameState, score, timeReactionMedio],
   );
 
   return (
@@ -106,71 +117,150 @@ const App: React.FC = () => {
       <Score>
         <ScoreTitle>SCORE</ScoreTitle>
         <ScoreValue>{score}</ScoreValue>
-        <TimeReactionTitle>Tempo de Reação:</TimeReactionTitle>
+        <TimeReactionTitle>Tempo de Reação: (ms)</TimeReactionTitle>
         <TimeReactionValue>{timeReaction.toFixed(2)}</TimeReactionValue>
+        <TimeReactionTitle>Tempo Medio de Reação: (ms)</TimeReactionTitle>
+        <TimeReactionValue>{timeMedio.toFixed(2)}</TimeReactionValue>
       </Score>
       <Lamps>
         <LampRow>
-          <Lamp backgroundColor={selectedColor || 'transparent'} />
-          {/* <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="blue" /> */}
-        </LampRow>
-        {/* <LampRow>
-          <Lamp backgroundColor="yellow" />
-          <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="blue" />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 0 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 1 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 2 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 3 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 4 && selectedColor) || 'transparent'}
+          />
         </LampRow>
         <LampRow>
-          <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="blue" />
-          <Lamp backgroundColor="red" />
-          <Lamp backgroundColor="blue" />
-        </LampRow> */}
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 5 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 6 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 7 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 8 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 9 && selectedColor) || 'transparent'}
+          />
+        </LampRow>
+        <LampRow>
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 10 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 11 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 12 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 13 && selectedColor) || 'transparent'}
+          />
+          <MaterialCommunityIcons
+            name="lightbulb"
+            size={80}
+            color={(selectedPosition === 14 && selectedColor) || 'transparent'}
+          />
+        </LampRow>
       </Lamps>
       <Buttons>
-        <Button
+        <Ionicons
+          name="ios-radio-button-on"
+          size={80}
+          color="yellow"
           disabled={disableColorButton}
           onPress={() => {
             setDisableColorButton(true);
             handleColorButton('yellow');
           }}
-          backgroundColor="yellow"
         />
-        <Button
+        <Ionicons
+          name="ios-radio-button-on"
+          size={80}
+          color="blue"
           disabled={disableColorButton}
           onPress={() => {
             setDisableColorButton(true);
             handleColorButton('blue');
           }}
-          backgroundColor="blue"
         />
-        <Button
+        <Ionicons
+          name="ios-radio-button-on"
+          size={80}
+          color="green"
           disabled={disableColorButton}
           onPress={() => {
             setDisableColorButton(true);
             handleColorButton('green');
           }}
-          backgroundColor="green"
         />
-        <Button
+        <Ionicons
+          name="ios-radio-button-on"
+          size={80}
+          color="red"
           disabled={disableColorButton}
           onPress={() => {
             setDisableColorButton(true);
             handleColorButton('red');
           }}
-          backgroundColor="red"
         />
       </Buttons>
 
       <Menu>
-        <StartButton onPress={() => handleStart()}>
-          <StartButtonText>Start</StartButtonText>
-        </StartButton>
-        <StartButton onPress={() => setGameState('off')}>
-          <StartButtonText>Stop</StartButtonText>
-        </StartButton>
+        <MaterialCommunityIcons
+          name="play-circle"
+          size={75}
+          color="gray"
+          onPress={() => handleStart()}
+        />
+        <MaterialCommunityIcons
+          name="stop-circle"
+          size={75}
+          color="gray"
+          onPress={() => setGameState('off')}
+        />
       </Menu>
     </Container>
   );

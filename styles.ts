@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { RectButton } from 'react-native-gesture-handler';
+// import { IoIosRadioButtonOn } from 'react-icons/io';
 
 export const Container = styled.View`
   flex: 1;
@@ -9,7 +10,7 @@ export const Container = styled.View`
 export const Header = styled.View`
   background-color: grey;
   width: 100%;
-  height: 70px;
+  height: 90px;
   justify-content: center;
   align-items: center;
 `;
@@ -20,23 +21,23 @@ export const AppTitle = styled.Text`
 `;
 
 export const ScoreTitle = styled.Text`
-  font-size: 30px;
-  padding: 10px;
+  font-size: 25px;
+  padding: 2px;
 `;
 
 export const ScoreValue = styled.Text`
-  font-size: 30px;
-  padding: 10px;
+  font-size: 25px;
+  padding: 2px;
 `;
 
 export const TimeReactionTitle = styled.Text`
   font-size: 20px;
-  padding: 10px;
+  padding: 2px;
 `;
 
 export const TimeReactionValue = styled.Text`
   font-size: 20px;
-  padding: 10px;
+  padding: 2px;
 `;
 
 export const Score = styled.View`
@@ -67,8 +68,9 @@ export const Buttons = styled.View`
 
 export const Menu = styled.View`
   flex-direction: row;
-  background-color: red;
-  height: 100%;
+  background-color: #dcdcdc;
+  height: 70%;
+  padding: 10px;
   justify-content: space-evenly;
   /* align-items: center; */
 `;
@@ -76,6 +78,7 @@ export const Menu = styled.View`
 export const StartButton = styled(RectButton)`
   width: 100px;
   border-radius: 10px;
+  padding: 2px;
   background-color: gray;
   align-items: center;
 `;

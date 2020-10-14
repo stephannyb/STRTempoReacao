@@ -43,6 +43,16 @@ export default class GameData {
     const sum = this.userAnswers.reduce((acc, curr) => {
       if (!curr.finalTime) return acc;
       const time = curr.finalTime - curr.initialTime;
+      return time;
+    }, 0.0);
+
+    return sum;
+  }
+
+  getTimeReactionMedio(): number {
+    const sum = this.userAnswers.reduce((acc, curr) => {
+      if (!curr.finalTime) return acc;
+      const time = curr.finalTime - curr.initialTime;
       return acc + time;
     }, 0.0);
 
